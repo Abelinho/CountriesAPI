@@ -30,6 +30,8 @@ import java.util.Map;
 public class CityService {
 
     private final RestTemplate restTemplate;
+
+    @Value("${countriesapi.baseurl}")
     private final String apiBaseUrl;
 
     @Autowired
