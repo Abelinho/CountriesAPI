@@ -8,5 +8,4 @@ import java.util.List;
 public class CityResponse {
 
     private List<CityData> data;
-
 }
