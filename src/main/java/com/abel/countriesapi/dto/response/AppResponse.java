@@ -1,5 +1,6 @@
 package com.abel.countriesapi.dto.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -7,12 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class AppResponse implements Serializable {
+@Builder
+public class AppResponse<T> implements Serializable {
 
-    private boolean error;
+    private String status;
 
-    private String msg;
+    private Long execTime;
 
-    private Object data;
+    @Builder.Default
+    private Object error = new ArrayList<>();
+
+    private String message;
+
+    private T data;
+
+//    private boolean error;
+//
+//    private String msg;
+//
+//    private T data;
 
 }

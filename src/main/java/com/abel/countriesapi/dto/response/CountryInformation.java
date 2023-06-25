@@ -9,7 +9,7 @@ import java.util.List;
 public class CountryInformation {
 
     private String country;
-    private List population;
+    private Object population;
     private String capital;
     private List<Integer> location;
     private String currency;

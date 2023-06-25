@@ -1,7 +1,9 @@
 package com.abel.countriesapi.controller;
 
 import com.abel.countriesapi.dto.request.CityRequest;
+import com.abel.countriesapi.dto.request.CountryCityPopulationRequest;
 import com.abel.countriesapi.dto.response.CityData;
+import com.abel.countriesapi.dto.response.CityResponse;
 import com.abel.countriesapi.dto.response.CountryInformation;
 import com.abel.countriesapi.dto.response.CountryStatesCities;
 import com.abel.countriesapi.service.CityService;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -29,18 +33,33 @@ public class CountriesController {
     private final CityService cityService;
     private final CurrencyConversionService currencyConversionService;
 
+//    @PostMapping(value = "/cities/top", produces = "Application/json", consumes = "Application/json")
+//    public ResponseEntity<List<CityData>> getTopCities(@Valid @RequestBody CountryCityPopulationRequest request
+//    ,@RequestParam Integer numberOfCities){
+//
+//        List<String> countries = List.of("Italy", "New Zealand", "Ghana");
+//
+//        List<CityData> topCities = cityService.getTopCitiesByPopulation(countries, request,numberOfCities);
+//
+//        return new ResponseEntity<>(topCities, HttpStatus.OK);
+//    }
+
     @GetMapping("/cities/top")
-    public ResponseEntity<List<CityData>> getTopCities(
-            @RequestParam("number_of_cities") int numberOfCities
-    ) {
-        List<String> countries = List.of("Italy", "New Zealand", "Ghana");
-        List<CityData> topCities = cityService.getTopCitiesByPopulation(countries, numberOfCities);
+    public ResponseEntity<CityResponse> getTopCities(@RequestParam Integer numberOfCity, @RequestParam String country) {
+        //List<String> countries = List.of("Italy", "New Zealand", "Ghana");
+
+        CityResponse topCities = null;
+        try {
+            topCities = cityService.getTopCitiesByPopulation(country, numberOfCity);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         return new ResponseEntity<>(topCities, HttpStatus.OK);
     }
 
-    @GetMapping("/countries/{country}/information")
-    public ResponseEntity<CountryInformation> getCountryInformation(@PathVariable("country") String country) {
+    @GetMapping("/countries/information")
+    public ResponseEntity<CountryInformation> getCountryInformation(@RequestParam String country) {
         CountryInformation countryInformation = cityService.getCountryInformation(country);
 
         if (countryInformation == null) {
