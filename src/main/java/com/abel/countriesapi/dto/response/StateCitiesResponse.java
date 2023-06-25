@@ -6,11 +6,10 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class CountryStatesResponse implements Serializable {
+public class StateCitiesResponse implements Serializable {
 
     private boolean error;
     private String msg;
-    private CountryStateData data;
+    private List<String> data;
 
-    //private List<String> states;
 }

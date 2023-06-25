@@ -6,7 +6,7 @@ import com.abel.countriesapi.dto.response.CapitalResponse;
 import com.abel.countriesapi.dto.response.CityData;
 import com.abel.countriesapi.dto.response.AppResponse;
 import com.abel.countriesapi.dto.response.CityResponse;
-import com.abel.countriesapi.dto.response.CountryCitiesResponse;
+//import com.abel.countriesapi.dto.response.CountryCitiesResponse;
 import com.abel.countriesapi.dto.response.CountryInformation;
 //import com.abel.countriesapi.dto.response.CountryPopulationResponse;
 import com.abel.countriesapi.dto.response.CountryStatesCities;
@@ -19,6 +19,8 @@ import com.abel.countriesapi.dto.response.LocationData;
 import com.abel.countriesapi.dto.response.LocationResponse;
 //import com.abel.countriesapi.dto.response.PopulationCount;
 import com.abel.countriesapi.dto.response.PopulationResponse;
+import com.abel.countriesapi.dto.response.StateCitiesResponse;
+import com.abel.countriesapi.dto.response.StateData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -235,29 +237,68 @@ public class CityService {
 
     public CountryStatesCities getCountryStatesAndCities(String country) {
 
-        String statesUrl = apiBaseUrl + "/countries/" + country + "/states";
+       // String statesUrl = apiBaseUrl + "/countries/" + country + "/states";
+        String url = apiBaseUrl + "/countries/states/q?&country={country}";
 
-        CountryStatesResponse statesResponse = restTemplate.getForObject(statesUrl, CountryStatesResponse.class);
+        //CountryStatesResponse statesResponse = restTemplate.getForObject(statesUrl, CountryStatesResponse.class);
 
-        if (statesResponse != null) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("country",country);
+
+        log.info("URL => " + url);
+        ResponseEntity<CountryStatesResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, CountryStatesResponse.class,params);
+
+        CountryStatesResponse countryStatesResponse = response.getBody();
+
+        if (response != null&& response.getBody() != null) {
             CountryStatesCities countryStatesCities = new CountryStatesCities();
             countryStatesCities.setCountry(country);
-            countryStatesCities.setStates(statesResponse.getStates());
-
-            Map<String, List<String>> citiesMap = new HashMap<>();
-            for (String state : statesResponse.getStates()) {
-                String citiesUrl = apiBaseUrl + "/countries/" + country + "/" + state + "/cities";
-                CountryCitiesResponse citiesResponse = restTemplate.getForObject(citiesUrl, CountryCitiesResponse.class);
-                if (citiesResponse != null) {
-                    citiesMap.put(state, citiesResponse.getCities());
-                }
-            }
-
-            countryStatesCities.setCities(citiesMap);
+            countryStatesCities.setStates(countryStatesResponse.getData().getStates());
+            countryStatesCities.setCities(getCitiesInState(countryStatesResponse,country));
             return countryStatesCities;
         }
 
         return null;
 
+    }
+
+    @Async
+    public Map<String, List<String>> getCitiesInState(CountryStatesResponse countryStatesResponse, String country){
+
+        Map<String, List<String>> citiesMap = new HashMap<>();
+        for (StateData state : countryStatesResponse.getData().getStates()) {
+
+            if (state.getName().equals("Lagos State")){//for Lagos special case!!
+                state.setName("Lagos");
+            }
+
+
+             log.info("State: "+state.getName());
+            String citiesUrl = apiBaseUrl + "/countries/state/cities/q?&country={country}&state={state}";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+
+            Map<String, String> params = new HashMap<>();
+            params.put("country",country);
+            params.put("state",state.getName());
+
+            log.info("URL => " + citiesUrl);
+            ResponseEntity<StateCitiesResponse> response = restTemplate.exchange(citiesUrl, HttpMethod.GET, entity, StateCitiesResponse.class,params);
+
+            log.info("Cities in state: "+response.getBody().getData().toString());
+
+            if (response != null && response.getBody()!=null) {
+                citiesMap.put(state.getName(), response.getBody().getData());
+
+            }
+        }
+
+        return citiesMap;
     }
 }

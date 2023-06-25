@@ -69,8 +69,8 @@ public class CountriesController {
         return new ResponseEntity<>(countryInformation, HttpStatus.OK);
     }
 
-    @GetMapping("/countries/{country}/states-cities")
-    public ResponseEntity<CountryStatesCities> getCountryStatesAndCities(@PathVariable("country") String country) {
+    @GetMapping("/countries/states/cities")
+    public ResponseEntity<CountryStatesCities> getCountryStatesAndCities(@RequestParam String country) {
         CountryStatesCities countryStatesCities = cityService.getCountryStatesAndCities(country);
 
         if (countryStatesCities == null) {

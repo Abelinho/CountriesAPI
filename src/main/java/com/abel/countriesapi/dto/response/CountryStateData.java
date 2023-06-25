@@ -4,12 +4,13 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 @Data
-public class CountryStatesCities implements Serializable {
+public class CountryStateData implements Serializable {
 
-    private String country;
+    private String name;
+    private String iso3;
+    private String iso2;
     private List<StateData> states;
-    private Map<String, List<String>> cities;
+
 }
