@@ -55,42 +55,13 @@ public class CityService {
         this.apiBaseUrl = apiBaseUrl;
     }
 
-//    public List<CityData> getTopCitiesByPopulation(List<String> countries, CountryCityPopulationRequest request,Integer numOfCities) {
-//        List<CityData> allCities = new ArrayList<>();
-//        Map<String, CountryCityPopulationRequest> params = new HashMap<>();
-//        //params.put("payload", request);
-//
-//        for (String country : countries) {
-//           // String url = apiBaseUrl + "/countries/population/cities?country=" + country;
-//           // CityResponse cityResponse = restTemplate.getForObject(url, CityResponse.class);
-//            String url = apiBaseUrl + "/population/cities/filter";
-//            CityResponse cityResponse = restTemplate.postForObject(url,request,CityResponse.class);
-//
-//            if (cityResponse != null && cityResponse.getData() != null) {
-//                allCities.addAll(cityResponse.getData());
-//            }
-//        }
-//
-//        allCities.sort(Comparator.comparingInt(CityData::getPopulation).reversed());
-//
-//        if (allCities.size() <= numOfCities) {
-//            return allCities;
-//        } else {
-//            return allCities.subList(0, numOfCities);
-//        }
-//    }
+    public CityResponse getTopCitiesByPopulation(String country, Integer numOfCities) {
 
-    public CityResponse getTopCitiesByPopulation(String country, Integer numOfCities) throws URISyntaxException {
-    //    List<CityData> allCities = new ArrayList<>();//was returned originally
         List<CityResponse> allCities = new ArrayList<>();
 
         String url = apiBaseUrl + "/countries/population/cities/filter/q?limit={limit}&order={order}&orderBy={orderBy}&country={country}";
-       // System.out.println(url);
-//        URI uri = new URI(url);
-
 
             HttpHeaders headers = new HttpHeaders();
-            //headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
@@ -102,8 +73,6 @@ public class CityService {
 
             log.info("URL => " + url);
             ResponseEntity<CityResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, CityResponse.class,params);
-
-//            log.info("CityResponse :: {}", response.getBody());
 
         return response.getBody();
     }
@@ -144,7 +113,7 @@ public class CityService {
         return isoData.getIso2() + ":"+isoData.getIso3();
     }
 
-    @Async
+    //@Async
     public String getCountryCurrency(String country) {
 
         String url = apiBaseUrl + "/countries/currency/q?&country={country}";
@@ -213,7 +182,6 @@ public class CityService {
     @Async
     public PopulationResponse getCountryPopulation(String country) {
 
-      //  String url = apiBaseUrl + "/countries/" + country + "/population";
           String url = apiBaseUrl + "/countries/population/q?&country={country}";
 
         HttpHeaders headers = new HttpHeaders();
@@ -237,10 +205,7 @@ public class CityService {
 
     public CountryStatesCities getCountryStatesAndCities(String country) {
 
-       // String statesUrl = apiBaseUrl + "/countries/" + country + "/states";
         String url = apiBaseUrl + "/countries/states/q?&country={country}";
-
-        //CountryStatesResponse statesResponse = restTemplate.getForObject(statesUrl, CountryStatesResponse.class);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -282,7 +247,7 @@ public class CityService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            HttpEntity<?> entity = new HttpEntity<>(headers);
+            HttpEntity<?> entity = new HttpEntity<>(headers);//entity to be written to the request
 
             Map<String, String> params = new HashMap<>();
             params.put("country",country);

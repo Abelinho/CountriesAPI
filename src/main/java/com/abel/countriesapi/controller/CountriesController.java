@@ -9,6 +9,7 @@ import com.abel.countriesapi.dto.response.CountryStatesCities;
 import com.abel.countriesapi.service.CityService;
 import com.abel.countriesapi.service.CurrencyConversionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,32 +29,18 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
+@Slf4j
 public class CountriesController {
 
     private final CityService cityService;
     private final CurrencyConversionService currencyConversionService;
 
-//    @PostMapping(value = "/cities/top", produces = "Application/json", consumes = "Application/json")
-//    public ResponseEntity<List<CityData>> getTopCities(@Valid @RequestBody CountryCityPopulationRequest request
-//    ,@RequestParam Integer numberOfCities){
-//
-//        List<String> countries = List.of("Italy", "New Zealand", "Ghana");
-//
-//        List<CityData> topCities = cityService.getTopCitiesByPopulation(countries, request,numberOfCities);
-//
-//        return new ResponseEntity<>(topCities, HttpStatus.OK);
-//    }
-
     @GetMapping("/cities/top")
     public ResponseEntity<CityResponse> getTopCities(@RequestParam Integer numberOfCity, @RequestParam String country) {
         //List<String> countries = List.of("Italy", "New Zealand", "Ghana");
+        CityResponse topCities;
 
-        CityResponse topCities = null;
-        try {
-            topCities = cityService.getTopCitiesByPopulation(country, numberOfCity);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        topCities = cityService.getTopCitiesByPopulation(country, numberOfCity);
 
         return new ResponseEntity<>(topCities, HttpStatus.OK);
     }
@@ -80,31 +67,19 @@ public class CountriesController {
         return new ResponseEntity<>(countryStatesCities, HttpStatus.OK);
     }
 
-    @GetMapping("/countries/{country}/convert-currency")
+    @GetMapping("/countries/convert-currency")
     public ResponseEntity<String> convertCurrency(
-            @PathVariable("country") String country,
+            @RequestParam("country") String country,
             @RequestParam("amount") BigDecimal amount,
             @RequestParam("targetCurrency") String targetCurrency) {
 
+        log.info("country: "+country+"amount: "+amount+" currency: "+targetCurrency);
         String countryCurrency = cityService.getCountryCurrency(country);
+        log.info("Base currency: "+countryCurrency);
         BigDecimal convertedAmount = currencyConversionService.convertCurrency(countryCurrency, targetCurrency, amount);
 
         String response = String.format("%s %.2f = %s %.2f", countryCurrency, amount, targetCurrency, convertedAmount);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    //clarify the endpoint below
-//    @PostMapping("/cities/population")
-//    public ResponseEntity<String> getCityPopulation(@RequestBody CityRequest cityRequest) {
-//
-//        String city = cityRequest.getCity();
-//
-//        // Your logic to process the city and retrieve the population
-//
-//        // For example, you can return a static response for now
-//        String response = "The population of " + city + " is 10 million";
-//
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
 
 }

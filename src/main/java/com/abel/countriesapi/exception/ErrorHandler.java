@@ -45,4 +45,32 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 .error(errorDetails)
                 .build());
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public final ResponseEntity<AppResponse<ErrorDetails>> NullPointerException(NullPointerException ex, WebRequest request) {
+
+        ErrorDetails errorDetails =
+                new ErrorDetails(new Date(), ex.getMessage(),
+                        request.getDescription(true), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity.status(errorDetails.getCode()).body(AppResponse.<ErrorDetails>builder()
+                .message(ex.getMessage())
+                .status(errorDetails.getCode().name())
+                .error(errorDetails)
+                .build());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public final ResponseEntity<AppResponse<ErrorDetails>> IllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+
+        ErrorDetails errorDetails =
+                new ErrorDetails(new Date(), ex.getMessage(),
+                        request.getDescription(true), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity.status(errorDetails.getCode()).body(AppResponse.<ErrorDetails>builder()
+                .message(ex.getMessage())
+                .status(errorDetails.getCode().name())
+                .error(errorDetails)
+                .build());
+    }
 }

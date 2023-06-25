@@ -2,6 +2,7 @@ package com.abel.countriesapi.service;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -12,9 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class CurrencyConversionService {
 
-    private final Map<String, Map<String, BigDecimal>> exchangeRates;
+    private final Map<String, Map<String, BigDecimal>> exchangeRates;//final
 
     public CurrencyConversionService() {
         this.exchangeRates = loadExchangeRates();
@@ -43,6 +45,7 @@ public class CurrencyConversionService {
             return amount;
         }
 
+        log.info(exchangeRates.toString());
         Map<String, BigDecimal> baseCurrencyRates = exchangeRates.get(baseCurrency);
         if (baseCurrencyRates == null) {
             throw new IllegalArgumentException("Base currency not found: " + baseCurrency);
