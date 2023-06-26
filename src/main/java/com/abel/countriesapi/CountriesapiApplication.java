@@ -6,11 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableAsync
+//@EnableWebMvc
 public class CountriesapiApplication {
 
 	public static void main(String[] args) {

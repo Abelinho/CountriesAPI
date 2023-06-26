@@ -1,23 +1,15 @@
 package com.abel.countriesapi.service;
 
-import com.abel.countriesapi.dto.request.CountryCityPopulationRequest;
-import com.abel.countriesapi.dto.response.CapitalData;
 import com.abel.countriesapi.dto.response.CapitalResponse;
-import com.abel.countriesapi.dto.response.CityData;
-import com.abel.countriesapi.dto.response.AppResponse;
 import com.abel.countriesapi.dto.response.CityResponse;
-//import com.abel.countriesapi.dto.response.CountryCitiesResponse;
 import com.abel.countriesapi.dto.response.CountryInformation;
-//import com.abel.countriesapi.dto.response.CountryPopulationResponse;
 import com.abel.countriesapi.dto.response.CountryStatesCities;
 import com.abel.countriesapi.dto.response.CountryStatesResponse;
-import com.abel.countriesapi.dto.response.CurrencyData;
 import com.abel.countriesapi.dto.response.CurrencyResponse;
 import com.abel.countriesapi.dto.response.IsoData;
 import com.abel.countriesapi.dto.response.IsoResponse;
 import com.abel.countriesapi.dto.response.LocationData;
 import com.abel.countriesapi.dto.response.LocationResponse;
-//import com.abel.countriesapi.dto.response.PopulationCount;
 import com.abel.countriesapi.dto.response.PopulationResponse;
 import com.abel.countriesapi.dto.response.StateCitiesResponse;
 import com.abel.countriesapi.dto.response.StateData;
@@ -33,11 +25,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

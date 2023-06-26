@@ -8,6 +8,7 @@ import com.abel.countriesapi.dto.response.CountryInformation;
 import com.abel.countriesapi.dto.response.CountryStatesCities;
 import com.abel.countriesapi.service.CityService;
 import com.abel.countriesapi.service.CurrencyConversionService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.util.List;
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "Countries-api")
 public class CountriesController {
 
     private final CityService cityService;
