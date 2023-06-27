@@ -1,19 +1,27 @@
 package com.abel.countriesapi.controller;
 
+import com.abel.countriesapi.dto.request.AuthenticationRequest;
 import com.abel.countriesapi.dto.request.CityRequest;
 import com.abel.countriesapi.dto.request.CountryCityPopulationRequest;
 import com.abel.countriesapi.dto.response.CityData;
 import com.abel.countriesapi.dto.response.CityResponse;
 import com.abel.countriesapi.dto.response.CountryInformation;
 import com.abel.countriesapi.dto.response.CountryStatesCities;
+import com.abel.countriesapi.dto.response.JwtResponse;
 import com.abel.countriesapi.service.CityService;
 import com.abel.countriesapi.service.CurrencyConversionService;
+import com.abel.countriesapi.util.JwtUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +36,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 @Api(tags = "Countries-api")
@@ -36,6 +44,23 @@ public class CountriesController {
 
     private final CityService cityService;
     private final CurrencyConversionService currencyConversionService;
+    private final JwtUtil tokenProvider;
+    private final AuthenticationManager authenticationManager;
+
+    @ApiOperation(value = "REST API to login or Signin user to our app")
+    @PostMapping("/auth")
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                authenticationRequest.getUserName(), authenticationRequest.getPassWord()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // get token form tokenProvider
+        String token = tokenProvider.generateToken(authentication);
+
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
 
     @GetMapping("/cities/top")
     public ResponseEntity<CityResponse> getTopCities(@RequestParam Integer numberOfCity, @RequestParam String country) {

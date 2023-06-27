@@ -9,3 +9,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+##JWT properties
+app:
+  jwt-secret: JWTSecretKey
+  jwt-expiration-milliseconds: 604800000
